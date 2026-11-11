@@ -8,114 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-width: 320px; min-height: 100%; background: #f8f9ff; }
-    body { color: #0b1c30; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .HtmlBody { display: block !important; width: 100% !important; min-height: 100vh; overflow: clip; }
-    .MainFullWidthCanvas { position: relative; width: 100%; height: auto !important; min-height: 100vh; padding-top: 70px; }
-    .MainDashboardContentCanvasFullWidthWithMaxContainer {
-      position: relative !important; inset: auto !important; transform: none !important;
-      width: 100% !important; max-width: 1600px !important; margin: 0 auto;
-      padding: 32px !important; gap: 24px !important;
-    }
-    .TopNavigationHeader {
-      position: absolute !important; inset: 0 0 auto !important; width: 100% !important;
-      min-height: 70px; z-index: 2; flex-wrap: wrap; row-gap: 10px;
-    }
-    .MinimalistBottomFooter {
-      position: relative !important; inset: auto !important; width: 100% !important;
-      max-width: none !important; z-index: 1; flex-wrap: wrap; gap: 8px 20px;
-    }
-    .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { width: 100%; }
-    .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { min-width: 0; }
-    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada,
-    .Section5GrafikTelemetri3JamTerakhirLogData { width: 100%; }
-    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin,
-    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { width: 100%; }
-    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container > div { min-width: 0; }
-    .Section5GrafikTelemetri3JamTerakhirLogData { display: grid !important; grid-template-columns: minmax(0, 2.05fr) minmax(320px, 1fr); gap: 20px; }
-    .Section5GrafikTelemetri3JamTerakhirLogData > div { width: 100%; min-width: 0; }
-    .SvgResponsiveLineChartCanvas { width: 100%; min-width: 0; overflow: hidden; }
-    .SvgResponsiveLineChartCanvas > .Svg { width: 100%; min-width: 0; }
-    /* Keep each chart layer at its authored SVG size; stretching the 15-by-13 end markers
-       to the plot width turns their white outlines into oversized circular arcs. */
-    .SvgResponsiveLineChartCanvas .Vector { width: auto; height: auto; }
-    .SvgResponsiveLineChartCanvas .Vector svg { width: auto; height: auto; max-width: none; }
-    .TopNavigationHeader > .Container:last-child { flex-wrap: wrap; }
-    /* Diagnosis card: stable three-part flex row. */
-    .Section1BannerStatusDiagnosisKualitasAir {
-      width: 100%; height: auto; min-height: 100px; padding: 18px 20px !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container {
-      display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-      align-items: center !important; justify-content: space-between !important;
-      gap: 16px; width: 100%; min-width: 0;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child {
-      display: flex !important; flex: 1 1 auto; flex-direction: row !important;
-      align-items: center !important; gap: 16px; width: auto; min-width: 0;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Margin {
-      flex: 0 0 56px; width: 56px !important; height: 50px !important;
-      padding: 1px 4px !important; align-items: center !important; justify-content: center !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir .Margin > .BackgroundShadow {
-      flex: 0 0 48px; width: 48px !important; height: 48px !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child {
-      display: flex !important; flex: 1 1 auto; width: auto !important;
-      min-width: 0; max-width: none !important; gap: 5px !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child > .Container:last-child {
-      width: 100% !important; min-width: 0; max-width: none !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child > .Container:last-child .Text {
-      width: 100%; white-space: normal; word-break: normal; overflow-wrap: normal;
-      font-size: 14px !important; line-height: 1.5 !important;
-    }
-    .Section1BannerStatusDiagnosisKualitasAir .LevelKlasifikasiSelectorPreview {
-      flex: 0 0 auto; min-width: max-content; white-space: nowrap;
-    }
-    @media (max-width: 1000px) {
-      .MainDashboardContentCanvasFullWidthWithMaxContainer { padding: 24px !important; }
-      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { flex-wrap: wrap; }
-      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { flex: 1 1 calc(50% - 12px); }
-      .Section5GrafikTelemetri3JamTerakhirLogData { grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); }
-    }
-    @media (max-width: 700px) {
-      .MainFullWidthCanvas { padding-top: 0; }
-      .TopNavigationHeader { position: relative !important; min-height: 0; padding: 12px 16px !important; }
-      .TopNavigationHeader > .Container { max-width: 100%; }
-      .TopNavigationHeader > .Container:last-child { width: 100%; justify-content: flex-start; }
-      .MainDashboardContentCanvasFullWidthWithMaxContainer { padding: 22px 16px !important; gap: 18px !important; }
-      .HeaderPageTitleSubtitleWithSimponiAcronym { align-items: flex-start !important; flex-direction: column; gap: 14px; }
-      .HeaderPageTitleSubtitleWithSimponiAcronym > .Container:last-child { align-self: stretch; }
-      .Section1BannerStatusDiagnosisKualitasAir { padding: 18px !important; }
-      .Section1BannerStatusDiagnosisKualitasAir > .Container { display: flex !important; align-items: flex-start !important; flex-direction: column; gap: 16px; }
-      .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child { display: flex; flex-direction: column; align-items: flex-start !important; width: 100%; }
-      .Section1BannerStatusDiagnosisKualitasAir .Margin { align-self: flex-start; }
-      .Section1BannerStatusDiagnosisKualitasAir .LevelKlasifikasiSelectorPreview { align-items: flex-start !important; }
-      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { flex-direction: column !important; }
-      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { width: 100%; flex-basis: auto; }
-      .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Container:first-child { align-items: flex-start !important; flex-direction: column; gap: 10px; }
-      .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { grid-template-columns: 1fr; }
-      .Section5GrafikTelemetri3JamTerakhirLogData { grid-template-columns: minmax(0, 1fr); }
-      .Section5GrafikTelemetri3JamTerakhirLogData > div { width: 100%; }
-      .Section5GrafikTelemetri3JamTerakhirLogData > .AreaVisualGrafikGarisTelemetri { padding: 18px !important; }
-      .AreaVisualGrafikGarisTelemetri > .Container:first-child > .Container { align-items: flex-start !important; flex-direction: column; gap: 10px; }
-      .AreaVisualGrafikGarisTelemetri .SvgResponsiveLineChartCanvas { overflow-x: auto; overflow-y: hidden; }
-      .TabelLogRiwayatSederhana { overflow-x: auto; }
-      .MinimalistBottomFooter { padding: 14px 16px !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div data-layer="Html → Body" class="HtmlBody" style="width: 1280px; background: linear-gradient(0deg, #F8F9FF 0%, #F8F9FF 100%), white; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
-  <div data-layer="Main Full-Width Canvas" class="MainFullWidthCanvas" style="align-self: stretch; height: 1878px; position: relative">
-    <div data-layer="Main Dashboard Content Canvas (Full-Width with Max Container)" class="MainDashboardContentCanvasFullWidthWithMaxContainer" style="width: 1280px; max-width: 1280px; padding: 32px; left: 0px; top: 70px; position: absolute; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
-      <div data-layer="Header Page Title & Subtitle with SIMPONI Acronym" class="HeaderPageTitleSubtitleWithSimponiAcronym" style="align-self: stretch; padding-bottom: 4px; justify-content: space-between; align-items: center; display: inline-flex">
+<div data-layer="Html → Body" class="HtmlBody">
+  <div data-layer="Main Full-Width Canvas" class="MainFullWidthCanvas">
+    <div data-layer="Main Dashboard Content Canvas (Full-Width with Max Container)" class="MainDashboardContentCanvasFullWidthWithMaxContainer">
+      <div data-layer="Header Page Title & Subtitle with SIMPONI Acronym" class="HeaderPageTitleSubtitleWithSimponiAcronym">
         <div data-layer="Container" class="Container" style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex">
           <div data-layer="Container" class="Container" style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 8px; display: inline-flex">
             <div data-layer="Container" class="Container" style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
@@ -172,65 +71,52 @@
           </div>
         </div>
       </div>
-      <div data-layer="Section - 1. BANNER STATUS DIAGNOSIS KUALITAS AIR" class="Section1BannerStatusDiagnosisKualitasAir" style="align-self: stretch; padding: 24px; background: linear-gradient(90deg, white 0%, white 50%, #EFF4FF 100%); box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 16px; outline: 1px #CCE5FF solid; outline-offset: -1px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
-        <div data-layer="Container" class="Container" style="align-self: stretch; justify-content: space-between; align-items: center; display: inline-flex">
-          <div data-layer="Container" class="Container" style="justify-content: flex-start; align-items: flex-start; gap: 16px; display: flex">
-            <div data-layer="Margin" class="Margin" style="width: 48px; height: 50px; padding-top: 2px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
-              <div data-layer="Background+Shadow" class="BackgroundShadow" style="width: 48px; height: 48px; background: #6FFBBE; box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05); border-radius: 16px; justify-content: center; align-items: center; display: inline-flex">
-                <div data-svg-wrapper data-layer="Container" class="Container">
-                  <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M8.86667 24.5L6.65 20.7667L2.45 19.8333L2.85833 15.5167L0 12.25L2.85833 8.98333L2.45 4.66667L6.65 3.73333L8.86667 0L12.8333 1.69167L16.8 0L19.0167 3.73333L23.2167 4.66667L22.8083 8.98333L25.6667 12.25L22.8083 15.5167L23.2167 19.8333L19.0167 20.7667L16.8 24.5L12.8333 22.8083L8.86667 24.5V24.5M11.6083 16.3917L18.2 9.8L16.5667 8.10833L11.6083 13.0667L9.1 10.6167L7.46667 12.25L11.6083 16.3917V16.3917" fill="#006947"/>
-                  </svg>
-                </div>
-              </div>
+      <div data-layer="Section - 1. BANNER STATUS DIAGNOSIS KUALITAS AIR" class="Section1BannerStatusDiagnosisKualitasAir">
+          <div class="DiagnosisBannerWrapper">
+          
+          <!-- Bagian Kiri: Ikon dan Teks Status -->
+          <div class="DiagnosisLeftContent">
+            <div class="DiagnosisIconBox">
+              <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.86667 24.5L6.65 20.7667L2.45 19.8333L2.85833 15.5167L0 12.25L2.85833 8.98333L2.45 4.66667L6.65 3.73333L8.86667 0L12.8333 1.69167L16.8 0L19.0167 3.73333L23.2167 4.66667L22.8083 8.98333L25.6667 12.25L22.8083 15.5167L23.2167 19.8333L19.0167 20.7667L16.8 24.5L12.8333 22.8083L8.86667 24.5V24.5M11.6083 16.3917L18.2 9.8L16.5667 8.10833L11.6083 13.0667L9.1 10.6167L7.46667 12.25L11.6083 16.3917V16.3917" fill="#006947"/>
+              </svg>
             </div>
-            <div data-layer="Container" class="Container" style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 5.38px; display: inline-flex">
-              <div data-layer="Container" class="Container" style="align-self: stretch; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex; flex-wrap: wrap; align-content: center">
-                <div data-layer="Container" class="Container" style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
-                  <div data-layer="Text" class="Text" style="justify-content: center; display: flex; flex-direction: column; color: #3F4850; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 20px; word-wrap: break-word">Diagnosis Kualitas Air Realtime:</div>
-                </div>
-                <div data-layer="Current Badge" class="CurrentBadge" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; background: #ECFDF5; border-radius: 9999px; outline: 1px #A7F3D0 solid; outline-offset: -1px; justify-content: flex-start; align-items: center; gap: 6px; display: flex">
-                  <div data-svg-wrapper data-layer="Background" class="Background">
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="DiagnosisTextGroup">
+              <div class="DiagnosisHeaderRow">
+                <span style="color: #3F4850; font-size: 14px; font-weight: 600;">Diagnosis Kualitas Air Realtime:</span>
+                <div class="CurrentBadge" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; background: #ECFDF5; border-radius: 9999px; outline: 1px #A7F3D0 solid; outline-offset: -1px; justify-content: flex-start; align-items: center; gap: 6px; display: flex;">
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="8" height="8" rx="4" fill="#10B981"/>
-                    </svg>
-                  </div>
-                  <div data-layer="Text" class="Text" style="justify-content: center; display: flex; flex-direction: column; color: #065F46; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 16px; letter-spacing: 0.24px; word-wrap: break-word">Kondisi Air: BAIK (Optimal)</div>
+                  </svg>
+                  <span style="color: #065F46; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 16px; letter-spacing: 0.24px;">Kondisi Air: BAIK (Optimal)</span>
                 </div>
               </div>
-              <div data-layer="Container" class="Container" style="width: 100%; max-width: 768px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
-                <div data-layer="Text" class="Text" style="justify-content: center; display: flex; flex-direction: column"><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word">Kombinasi nilai suhu </span><span style="color: #006194; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 22.75px; word-wrap: break-word">27.8°C</span><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word">, pH </span><span style="color: #006194; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 22.75px; word-wrap: break-word">6.9</span><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word">, dan kekeruhan </span><span style="color: #006194; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 22.75px; word-wrap: break-word">92 NTU</span><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word"> berada dalam zona aman dan sehat untuk metabolisme<br/></span><span style="color: #006947; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 22.75px; word-wrap: break-word">Ikan Nila</span><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word"> serta penyerapan nutrisi </span><span style="color: #006947; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 22.75px; word-wrap: break-word">Tanaman Selada</span><span style="color: #0B1C30; font-size: 14px; font-family: Plus Jakarta Sans; font-weight: 400; line-height: 22.75px; word-wrap: break-word">.</span></div>
-              </div>
+              <p class="DiagnosisParagraph">
+                Kombinasi nilai suhu <strong>27.8°C</strong>, pH <strong>6.9</strong>, dan kekeruhan <strong>92 NTU</strong> berada dalam zona aman dan sehat untuk metabolisme <span class="highlight-green">Ikan Nila</span> serta penyerapan nutrisi <span class="highlight-green">Tanaman Selada</span>.
+              </p>
             </div>
           </div>
-          <div data-layer="3 Level Klasifikasi Selector Preview" class="LevelKlasifikasiSelectorPreview" style="flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 8px; display: inline-flex">
-            <div data-layer="Container" class="Container" style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
-              <div data-layer="Text" class="Text" style="justify-content: center; display: flex; flex-direction: column; color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px; word-wrap: break-word">Klasifikasi Otomatis IoT:</div>
-            </div>
-            <div data-layer="Background" class="Background" style="padding: 4px; background: #E5EEFF; border-radius: 12px; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex">
-              <div data-layer="Button - Level 1: Baik (Active)" class="ButtonLevel1BaikActive" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; background: white; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex">
-                <div data-svg-wrapper data-layer="Background" class="Background">
-                  <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bagian Kanan: Filter Klasifikasi Otomatis IoT -->
+          <div class="LevelKlasifikasiSelectorPreview">
+            <span style="color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px;">Klasifikasi Otomatis IoT:</span>
+            <div class="Background" style="padding: 4px; background: #E5EEFF; border-radius: 12px; justify-content: flex-start; align-items: flex-start; gap: 4px; display: inline-flex;">
+              <div class="ButtonLevel1BaikActive" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; background: white; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex;">
+                <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect width="6" height="6" rx="3" fill="#006947"/>
-                  </svg>
-                </div>
-                <div data-layer="Text" class="Text" style="text-align: center; justify-content: center; display: flex; flex-direction: column; color: #006947; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 16px; letter-spacing: 0.24px; word-wrap: break-word">Baik</div>
+                </svg>
+                <span style="color: #006947; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 700; line-height: 16px; letter-spacing: 0.24px;">Baik</span>
               </div>
-              <div data-layer="Button - Level 2: Perlu Perhatian" class="ButtonLevel2PerluPerhatian" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex">
-                <div data-svg-wrapper data-layer="Background" class="Background">
-                  <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div class="ButtonLevel2PerluPerhatian" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex;">
+                <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect width="6" height="6" rx="3" fill="#F59E0B"/>
-                  </svg>
-                </div>
-                <div data-layer="Text" class="Text" style="text-align: center; justify-content: center; display: flex; flex-direction: column; color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px; word-wrap: break-word">Perlu Perhatian</div>
+                </svg>
+                <span style="color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px;">Perlu Perhatian</span>
               </div>
-              <div data-layer="Button - Level 3: Buruk" class="ButtonLevel3Buruk" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex">
-                <div data-svg-wrapper data-layer="Background" class="Background">
-                  <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <div class="ButtonLevel3Buruk" style="padding-left: 12px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px; border-radius: 8px; justify-content: flex-start; align-items: center; gap: 4px; display: flex;">
+                <svg width="6" height="6" viewBox="0 0 6 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect width="6" height="6" rx="3" fill="#BA1A1A"/>
-                  </svg>
-                </div>
-                <div data-layer="Text" class="Text" style="text-align: center; justify-content: center; display: flex; flex-direction: column; color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px; word-wrap: break-word">Buruk</div>
+                </svg>
+                <span style="color: #707881; font-size: 12px; font-family: Plus Jakarta Sans; font-weight: 600; line-height: 16px; letter-spacing: 0.24px;">Buruk</span>
               </div>
             </div>
           </div>

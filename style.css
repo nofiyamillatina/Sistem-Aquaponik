@@ -1,0 +1,135 @@
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 320px; min-height: 100%; background: #f8f9ff; }
+    body { color: #0b1c30; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .HtmlBody {
+      display: block !important; width: 100% !important; min-height: 100vh; overflow: clip;
+      background: linear-gradient(0deg, #F8F9FF 0%, #F8F9FF 100%), white;
+    }
+    .MainFullWidthCanvas { position: relative; width: 100%; height: auto !important; min-height: 100vh; padding-top: 70px; }
+    .MainDashboardContentCanvasFullWidthWithMaxContainer {
+      position: relative !important; inset: auto !important; transform: none !important;
+      width: 100% !important; max-width: 1600px !important; margin: 0 auto;
+      padding: 32px !important; gap: 24px !important;
+      display: inline-flex; flex-direction: column;
+      justify-content: flex-start; align-items: flex-start;
+    }
+    .HeaderPageTitleSubtitleWithSimponiAcronym {
+      align-self: stretch; padding-bottom: 4px; justify-content: space-between;
+      align-items: center; display: inline-flex;
+    }
+    .TopNavigationHeader {
+      position: absolute !important; inset: 0 0 auto !important; width: 100% !important;
+      min-height: 70px; z-index: 2; flex-wrap: wrap; row-gap: 10px;
+    }
+    .MinimalistBottomFooter {
+      position: relative !important; inset: auto !important; width: 100% !important;
+      max-width: none !important; z-index: 1; flex-wrap: wrap; gap: 8px 20px;
+    }
+    .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { width: 100%; }
+    .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { min-width: 0; }
+    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada,
+    .Section5GrafikTelemetri3JamTerakhirLogData { width: 100%; }
+    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin,
+    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { width: 100%; }
+    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container > div { min-width: 0; }
+    .Section5GrafikTelemetri3JamTerakhirLogData { display: grid !important; grid-template-columns: minmax(0, 2.05fr) minmax(320px, 1fr); gap: 20px; }
+    .Section5GrafikTelemetri3JamTerakhirLogData > div { width: 100%; min-width: 0; }
+    .SvgResponsiveLineChartCanvas { width: 100%; min-width: 0; overflow: hidden; }
+    .SvgResponsiveLineChartCanvas > .Svg { width: 100%; min-width: 0; }
+    /* Keep each chart layer at its authored SVG size; stretching the 15-by-13 end markers
+       to the plot width turns their white outlines into oversized circular arcs. */
+    .SvgResponsiveLineChartCanvas .Vector { width: auto; height: auto; }
+    .SvgResponsiveLineChartCanvas .Vector svg { width: auto; height: auto; max-width: none; }
+    .TopNavigationHeader > .Container:last-child { flex-wrap: wrap; }
+    /* Diagnosis card: stable three-part flex row. */
+    .Section1BannerStatusDiagnosisKualitasAir {
+      width: 100%; height: auto; min-height: 100px; padding: 18px 20px !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir {
+      width: 100%;
+      padding: 24px !important;
+      background: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 50%, #EFF4FF 100%);
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      outline: 1px #CCE5FF solid;
+      outline-offset: -1px;
+      display: flex;
+      flex-direction: column;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir .DiagnosisBannerWrapper {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 20px;
+      width: 100%;
+    }
+    /* Mengubah format teks panjang menjadi paragraf HTML normal agar mengalir rapi */
+    .Section1BannerStatusDiagnosisKualitasAir .DiagnosisParagraph {
+      color: #0B1C30;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      margin: 0;
+      display: block !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child {
+      display: flex !important; flex: 1 1 auto; flex-direction: row !important;
+      align-items: center !important; gap: 16px; width: auto; min-width: 0;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Margin {
+      flex: 0 0 56px; width: 56px !important; height: 50px !important;
+      padding: 1px 4px !important; align-items: center !important; justify-content: center !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir .Margin > .BackgroundShadow {
+      flex: 0 0 48px; width: 48px !important; height: 48px !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child {
+      display: flex !important; flex: 1 1 auto; width: auto !important;
+      min-width: 0; max-width: none !important; gap: 5px !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child > .Container:last-child {
+      width: 100% !important; min-width: 0; max-width: none !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child > .Container:last-child > .Container:last-child .Text {
+      width: 100%; white-space: normal; word-break: normal; overflow-wrap: normal;
+      font-size: 14px !important; line-height: 1.5 !important;
+    }
+    .Section1BannerStatusDiagnosisKualitasAir .LevelKlasifikasiSelectorPreview {
+      flex: 0 0 auto; min-width: max-content; white-space: nowrap;
+    }
+    @media (max-width: 1000px) {
+      .MainDashboardContentCanvasFullWidthWithMaxContainer { padding: 24px !important; }
+      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { flex-wrap: wrap; }
+      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { flex: 1 1 calc(50% - 12px); }
+      .Section5GrafikTelemetri3JamTerakhirLogData { grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .MainFullWidthCanvas { padding-top: 0; }
+      .TopNavigationHeader { position: relative !important; min-height: 0; padding: 12px 16px !important; }
+      .TopNavigationHeader > .Container { max-width: 100%; }
+      .TopNavigationHeader > .Container:last-child { width: 100%; justify-content: flex-start; }
+      .MainDashboardContentCanvasFullWidthWithMaxContainer { padding: 22px 16px !important; gap: 18px !important; }
+      .HeaderPageTitleSubtitleWithSimponiAcronym { align-items: flex-start !important; flex-direction: column; gap: 14px; }
+      .HeaderPageTitleSubtitleWithSimponiAcronym > .Container:last-child { align-self: stretch; }
+      .Section1BannerStatusDiagnosisKualitasAir { padding: 18px !important; }
+      .Section1BannerStatusDiagnosisKualitasAir > .Container { display: flex !important; align-items: flex-start !important; flex-direction: column; gap: 16px; }
+      .Section1BannerStatusDiagnosisKualitasAir > .Container > .Container:first-child { display: flex; flex-direction: column; align-items: flex-start !important; width: 100%; }
+      .Section1BannerStatusDiagnosisKualitasAir .Margin { align-self: flex-start; }
+      .Section1BannerStatusDiagnosisKualitasAir .LevelKlasifikasiSelectorPreview { align-items: flex-start !important; }
+      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa { flex-direction: column !important; }
+      .Section2KartuMetrikUtama3SensorIotUtamaStatusRingkasPompa > div { width: 100%; flex-basis: auto; }
+      .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Container:first-child { align-items: flex-start !important; flex-direction: column; gap: 10px; }
+      .Section4InfoEkosistemKomparasiKebutuhanRiilIkanNilaSelada > .Margin > .Container { grid-template-columns: 1fr; }
+      .Section5GrafikTelemetri3JamTerakhirLogData { grid-template-columns: minmax(0, 1fr); }
+      .Section5GrafikTelemetri3JamTerakhirLogData > div { width: 100%; }
+      .Section5GrafikTelemetri3JamTerakhirLogData > .AreaVisualGrafikGarisTelemetri { padding: 18px !important; }
+      .AreaVisualGrafikGarisTelemetri > .Container:first-child > .Container { align-items: flex-start !important; flex-direction: column; gap: 10px; }
+      .AreaVisualGrafikGarisTelemetri .SvgResponsiveLineChartCanvas { overflow-x: auto; overflow-y: hidden; }
+      .TabelLogRiwayatSederhana { overflow-x: auto; }
+      .MinimalistBottomFooter { padding: 14px 16px !important; }
+    }
+  
