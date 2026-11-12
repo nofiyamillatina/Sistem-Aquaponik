@@ -6,3 +6,55 @@ body {
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
+
+    .connection-indicator.connection-online {
+      background-color: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    .connection-indicator.connection-online .connection-dot {
+      background-color: #10b981;
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .connection-indicator.connection-online #connection-status {
+      color: #065f46;
+    }
+
+    .connection-indicator.connection-offline {
+      background-color: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    .connection-indicator.connection-offline .connection-dot {
+      background-color: #f43f5e;
+      animation: none;
+    }
+
+    .connection-indicator.connection-offline #connection-status {
+      color: #9f1239;
+    }
+
+    .sensor-status.sensor-good {
+      color: #047857;
+      background-color: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    .sensor-status.sensor-warning {
+      color: #b45309;
+      background-color: #fffbeb;
+      border-color: #fcd34d;
+    }
+
+    .sensor-status.sensor-bad {
+      color: #be123c;
+      background-color: #fff1f2;
+      border-color: #fda4af;
+    }
+
+    .sensor-status.sensor-unknown {
+      color: #475569;
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }

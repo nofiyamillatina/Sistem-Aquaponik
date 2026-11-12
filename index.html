@@ -54,24 +54,25 @@
               MONITORING IOT
             </span>
           </div>
-          <p class="text-xs text-slate-500">Sistem Pemantauan Kualitas Air Aquaponik • Real-Time Monitor</p>
+          <p class="text-xs text-slate-500">Sistem Pemantauan Kualitas Air Aquaponik</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-4">
-        <!-- Status ESP32 Online -->
-        <div class="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-xs font-semibold text-emerald-800">ESP32 Online</span>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full md:w-auto">
+        <!-- Status koneksi ESP32 -->
+        <div id="connection-indicator" class="connection-indicator connection-offline flex items-center gap-2 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-200" aria-live="polite">
+          <span class="connection-dot w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          <span id="connection-status" class="text-xs font-semibold text-rose-800">ESP32 Offline</span>
         </div>
 
-        <!-- Interval Sinkronisasi -->
-        <div class="text-xs text-slate-500 hidden sm:block border-l border-slate-200 pl-4">
-          Interval: <span class="font-semibold text-slate-700">Setiap 2 Menit</span>
+        <!-- Interval Sensor dan Dashboard -->
+        <div class="text-xs text-slate-500 border-l border-slate-200 pl-4 space-y-0.5 min-w-0" aria-label="Interval sistem">
+          <div>Pembacaan sensor: <span id="sensor-interval" class="font-semibold text-slate-700">Setiap 3 menit</span></div>
+          <div>Pembaruan dashboard: <span id="dashboard-interval" class="font-semibold text-slate-700">Setiap 30 detik</span></div>
         </div>
 
         <!-- Tombol Sinkronkan -->
-        <button class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 active:scale-95 text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all shadow-sm">
+        <button id="refresh-sensors" type="button" class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 active:scale-95 text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all shadow-sm">
           <span class="material-symbols-outlined text-base">sync</span>
           Sinkronkan
         </button>
@@ -82,44 +83,44 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
       <div>
         <div class="text-xs text-slate-400 font-medium">
-          Sistem Aquaponik Cerdas &gt; <span class="text-sky-600">Pemantauan Realtime Kolam & Hidroponik</span>
+          Sistem Aquaponik Cerdas &gt; <span class="text-sky-600">Pemantauan Data Kolam & Hidroponik</span>
         </div>
         <h2 class="text-2xl font-bold text-slate-900 mt-1">Dashboard SIMPONI</h2>
         <p class="text-xs text-slate-500">Sistem Monitoring Kualitas Air Pada Aquaponik Berbasis ESP32</p>
       </div>
       <div class="flex items-center gap-2 text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-xl self-start md:self-auto">
         <span class="material-symbols-outlined text-base text-slate-400">schedule</span>
-        <span>Update terakhir: <strong class="text-slate-700">11:38:10 WIB</strong></span>
-        <button class="hover:text-sky-600 ml-1">
+        <span>Update terakhir: <strong id="last-updated" class="text-slate-700">Belum ada</strong></span>
+        <button id="refresh-time" type="button" class="hover:text-sky-600 ml-1" aria-label="Minta data sensor terbaru">
           <span class="material-symbols-outlined text-base">refresh</span>
         </button>
       </div>
     </div>
 
     <!-- Alert / Diagnosis Kualitas Air Realtime -->
-    <div class="bg-white border border-emerald-100 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div id="water-condition-panel" class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex items-start md:items-center gap-3">
-        <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
-          <span class="material-symbols-outlined text-2xl">check_circle</span>
+        <div class="p-2 bg-slate-50 rounded-xl text-slate-500">
+          <span id="water-condition-symbol" class="material-symbols-outlined text-2xl">sensors</span>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Diagnosis Kualitas Air Realtime:</span>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-emerald-100 text-emerald-800">
-              ● Kondisi Air: BAIK (Optimal)
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Diagnosis Kualitas Air Realtime</span>
+            <span id="water-condition-label" class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
+              Menunggu data sensor.
             </span>
           </div>
           <p class="text-xs text-slate-600 mt-1">
-            Kombinasi nilai suhu <strong>27.8 °C</strong>, pH <strong>6.9</strong>, dan kekeruhan <strong>92 NTU</strong> berada dalam zona aman dan sehat untuk metabolisme <strong>Ikan Nila</strong> serta penyerapan nutrisi <strong>Tanaman Selada</strong>.
+            <span id="water-condition-description">Menunggu data sensor.</span>
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3 text-xs text-slate-500 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-4">
-        <span class="font-medium">Klasifikasi Otomatis IoT:</span>
-        <span class="inline-flex items-center gap-1 text-emerald-700 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Baik</span>
-        <span class="inline-flex items-center gap-1 text-amber-600 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Perhatian</span>
-        <span class="inline-flex items-center gap-1 text-rose-600 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Buruk</span>
+      <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-4" aria-label="Kategori kualitas air">
+        <span class="font-medium">Kategori:</span>
+        <span class="inline-flex items-center gap-1 text-emerald-700 font-semibold" title="Parameter berada dalam rentang yang sesuai untuk mendukung ikan nila dan tanaman selada."><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Baik</span>
+        <span class="inline-flex items-center gap-1 text-amber-600 font-semibold" title="Satu atau beberapa parameter mulai menyimpang dari kondisi ideal dan perlu dipantau."><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Perlu Perhatian</span>
+        <span class="inline-flex items-center gap-1 text-rose-600 font-semibold" title="Parameter air berpotensi mengganggu ikan, tanaman, atau keseimbangan ekosistem."><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Buruk</span>
       </div>
     </div>
 
@@ -137,17 +138,17 @@
               <p class="text-[11px] text-slate-400">Sensor DS18B20</p>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            ● Normal
+          <span id="temperature-status" class="sensor-status px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
+            Menunggu data
           </span>
         </div>
         <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">27.8 <span class="text-lg font-normal text-slate-500">°C</span></div>
-          <div class="text-xs text-emerald-600 font-medium flex items-center">↗ +0.1°C / 1 jam</div>
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="temperature-value">—</span> <span class="text-lg font-normal text-slate-500">°C</span></div>
+          <div id="temperature-trend" class="text-xs text-slate-500 font-medium flex items-center">Menunggu pembacaan</div>
         </div>
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
-          <span>Rentang aman biologis:</span>
-          <span class="font-semibold text-slate-700">25.0 - 30.0 °C</span>
+          <span>Acuan nila:</span>
+          <span class="font-semibold text-slate-700">25–32°C</span>
         </div>
       </div>
 
@@ -160,20 +161,20 @@
             </div>
             <div>
               <h3 class="text-sm font-semibold text-slate-800">Derajat Keasaman (pH)</h3>
-              <p class="text-[11px] text-slate-400">Modul PH-4502C + Probe Elektrode BNC</p>
+              <p class="text-[11px] text-slate-400">Sensor pH belum terintegrasi</p>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            ● Optimal
+          <span id="ph-status" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
+            Menunggu Sensor pH
           </span>
         </div>
         <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">6.9 <span class="text-lg font-normal text-slate-500">pH</span></div>
-          <div class="text-xs text-slate-500 font-medium">− Stabil (±0.02)</div>
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="ph-value">—</span> <span class="text-lg font-normal text-slate-500">pH</span></div>
+          <div class="text-xs text-slate-500 font-medium">Belum tersedia</div>
         </div>
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
-          <span>Rentang netral ideal:</span>
-          <span class="font-semibold text-slate-700">6.5 - 7.5 pH</span>
+          <span>Kalibrasi sensor:</span>
+          <span class="font-semibold text-slate-700">Menunggu kalibrasi</span>
         </div>
       </div>
 
@@ -189,17 +190,17 @@
               <p class="text-[11px] text-slate-400">Sensor TS-300B</p>
             </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            ● Jernih
+          <span id="turbidity-status" class="sensor-status px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
+            Menunggu data
           </span>
         </div>
         <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">92 <span class="text-lg font-normal text-slate-500">NTU</span></div>
-          <div class="text-xs text-emerald-600 font-medium flex items-center">↘ Turun (−4 NTU)</div>
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="turbidity-adc">—</span> <span class="text-lg font-normal text-slate-500">ADC</span></div>
+          <div class="text-xs text-slate-500 font-medium">KAL: <span id="turbidity-kal">—</span></div>
         </div>
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
-          <span>Ambang batas jernih:</span>
-          <span class="font-semibold text-slate-700">&lt; 120 NTU</span>
+          <span>Status pembacaan:</span>
+          <span id="turbidity-classification" class="font-semibold text-slate-700">Belum tersedia</span>
         </div>
       </div>
     </div>
@@ -215,33 +216,29 @@
             <div class="flex items-center gap-2">
               <h3 class="font-bold text-slate-800">Pompa Sirkulasi Aquaponik</h3>
               <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-                ● ACTIVE • CONTINUOUS FLOW
+                ● ALWAYS ON • ACTIVE LOW
               </span>
             </div>
             <p class="text-xs text-slate-500 mt-0.5">
-              Pompa dirancang mengalir terus-menerus tanpa henti untuk menjaga pasokan oksigen terlarut (DO) & siklus nitrifikasi biofilter.
+              Pompa diperintahkan menyala terus selama sistem berjalan; status fisik motor tidak diukur.
             </p>
           </div>
         </div>
 
         <div class="flex items-center gap-6 text-xs border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-6">
           <div>
-            <div class="text-slate-400">Debit Estimasi</div>
-            <div class="font-bold text-slate-800 text-sm">~12.5 L/menit</div>
-          </div>
-          <div>
-            <div class="text-slate-400">Waktu Operasi</div>
-            <div class="font-bold text-slate-800 text-sm">24 Jam Non-Stop</div>
+            <div class="text-slate-400">Perintah pompa</div>
+            <div id="pump-status" class="font-bold text-emerald-600 text-sm">Always ON</div>
           </div>
           <div>
             <div class="text-slate-400">Status Relai ESP32</div>
-            <div class="font-bold text-emerald-600 text-sm">GPIO 18 (ON)</div>
+            <div class="font-bold text-slate-800 text-sm">Active LOW</div>
           </div>
         </div>
       </div>
       <div class="mt-3 pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-center gap-1.5">
         <span class="material-symbols-outlined text-sm text-slate-400">info</span>
-        Sistem pengaman otomatis: Akan segera beralih ke status Tidak Aktif / Gangguan jika arus motor atau modul relai terputus.
+        Status Always ON menunjukkan perintah keluaran relay; gangguan motor tidak dapat dideteksi tanpa sensor tambahan.
       </div>
     </div>
 
@@ -250,7 +247,7 @@
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <h3 class="font-bold text-slate-900">Biologi Ekosistem Simbiosis</h3>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">PANDUAN STANDAR</span>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">ACUAN LINGKUNGAN IDEAL</span>
         </div>
         <span class="text-xs text-emerald-600 flex items-center gap-1 font-medium cursor-pointer">
           <span class="material-symbols-outlined text-sm">menu_book</span>
@@ -283,25 +280,27 @@
 
           <!-- Standar Parameter -->
           <div>
-            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">STANDAR BATAS PARAMETER SENSOR</div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)</div>
             <div class="grid grid-cols-3 gap-2 text-xs">
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-slate-400 block text-[10px]">Suhu Air</span>
-                <span class="font-bold text-slate-700">25°C - 30°C</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Optimal 28°C</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-400 block text-[10px] break-words">Suhu Air</span>
+                <span class="font-bold text-slate-700 break-words">25–32°C</span>
+                <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Mendukung pertumbuhan ikan</span>
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-slate-400 block text-[10px]">Derajat pH</span>
-                <span class="font-bold text-slate-700">6.5 - 8.0 pH</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Netral 7.0</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-400 block text-[10px] break-words">Derajat pH</span>
+                <span class="font-bold text-slate-700 break-words">6,0–8,5</span>
+                <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Air tidak terlalu asam atau basa</span>
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-slate-400 block text-[10px]">Kekeruhan</span>
-                <span class="font-bold text-slate-700">&lt; 150 NTU</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Jernih Aman</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-400 block text-[10px] break-words">Kekeruhan</span>
+                <span class="font-bold text-slate-700 break-words">Air relatif jernih</span>
+                <span class="text-[10px] text-slate-600 block mt-0.5 break-words">Padatan tersuspensi terkendali</span>
               </div>
             </div>
           </div>
+
+          <p class="text-[11px] text-slate-500">Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis (bukan hasil pengukuran sensor), bakteri mengubah limbah metabolisme ikan menjadi nutrisi bagi tanaman.</p>
 
           <!-- Dampak Buruk Parameter Anomali -->
           <div class="bg-rose-50/60 rounded-xl p-3 border border-rose-100 text-xs space-y-1.5">
@@ -310,9 +309,9 @@
               Dampak Jika Parameter Sensor Tidak Sesuai
             </div>
             <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
-              <li><strong>Suhu:</strong> &lt;20°C nafsu makan anjlok & daya tahan turun; &gt;32°C memicu stres termal & defisit oksigen.</li>
-              <li><strong>pH:</strong> &lt;6.0 mengikis lendir insang & asidosis; &gt;8.5 meningkatkan toksisitas amonia bebas (NH3).</li>
-              <li><strong>Turbiditas:</strong> &gt;150 NTU menyumbat lamela insang dan memicu infeksi patogen.</li>
+              <li><strong>Suhu:</strong> Dapat mengganggu metabolisme, nafsu makan, dan pertumbuhan ikan serta aktivitas bakteri pengurai limbah.</li>
+              <li><strong>pH:</strong> Dapat mengganggu kesehatan ikan dan proses pengubahan limbah menjadi nutrisi bagi tanaman.</li>
+              <li><strong>Kekeruhan:</strong> Partikel berlebih dapat mengganggu insang ikan dan meningkatkan penumpukan limbah dalam air.</li>
             </ul>
           </div>
         </div>
@@ -336,25 +335,27 @@
 
           <!-- Standar Parameter Selada -->
           <div>
-            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">STANDAR BATAS PARAMETER SENSOR</div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)</div>
             <div class="grid grid-cols-3 gap-2 text-xs">
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-emerald-700 block text-[10px]">Suhu Akar</span>
-                <span class="font-bold text-slate-700">20°C - 26°C</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Maksimal 28°C</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-emerald-700 block text-[10px] break-words">Suhu Air</span>
+                <span class="font-bold text-slate-700 break-words">18–24°C</span>
+                <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Mendukung pertumbuhan akar</span>
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-emerald-700 block text-[10px]">pH Nutrisi</span>
-                <span class="font-bold text-slate-700">6.0 - 7.0 pH</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Ideal 6.5</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-emerald-700 block text-[10px] break-words">pH Nutrisi</span>
+                <span class="font-bold text-slate-700 break-words">5,5–6,5</span>
+                <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Membantu penyerapan nutrisi</span>
               </div>
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                <span class="text-emerald-700 block text-[10px]">Kekeruhan</span>
-                <span class="font-bold text-slate-700">&lt; 100 NTU</span>
-                <span class="text-[10px] text-emerald-600 block mt-0.5">● Filtrasi Bersih</span>
+              <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-emerald-700 block text-[10px] break-words">Kekeruhan</span>
+                <span class="font-bold text-slate-700 break-words">Air relatif jernih</span>
+                <span class="text-[10px] text-slate-600 block mt-0.5 break-words">Padatan tersuspensi terkendali</span>
               </div>
             </div>
           </div>
+
+          <p class="text-[11px] text-slate-500">Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis, selada menyerap nutrisi dari air; air bersirkulasi kembali ke kolam ikan. Senyawa nutrisi tidak diukur oleh sensor saat ini.</p>
 
           <!-- Dampak Buruk Parameter Anomali -->
           <div class="bg-rose-50/60 rounded-xl p-3 border border-rose-100 text-xs space-y-1.5">
@@ -363,9 +364,9 @@
               Dampak Jika Parameter Sensor Tidak Sesuai
             </div>
             <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
-              <li><strong>Suhu:</strong> &gt;28°C memicu bolting dini (rasa pahit), daun layu, dan rentan busuk akar Pythium.</li>
-              <li><strong>pH:</strong> &lt;5.5 akar terbakar; &gt;7.0 mengunci nutrisi mikro (defisiensi zat besi / Fe klorosis).</li>
-              <li><strong>Turbiditas:</strong> Endapan lumpur menempel pada rambut akar dan memblokir serapan hara.</li>
+              <li><strong>Suhu:</strong> Dapat menghambat pertumbuhan akar, penyerapan nutrisi, dan aktivitas bakteri penyedia unsur hara.</li>
+              <li><strong>pH:</strong> Dapat menghambat penyerapan nutrisi sehingga pertumbuhan tanaman terganggu dan daun menguning.</li>
+              <li><strong>Kekeruhan:</strong> Endapan berlebih dapat mengganggu aliran air, menutupi akar, dan menghambat penyerapan nutrisi.</li>
             </ul>
           </div>
         </div>
@@ -379,43 +380,42 @@
         <div>
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-slate-800">Tren Data Sensor (3 Jam Terakhir)</h3>
-              <p class="text-xs text-slate-400">Grafik riwayat sensor suhu, pH, dan kekeruhan air.</p>
+              <h3 class="font-bold text-slate-800">Tren Data Sensor</h3>
+              <p id="chart-description" class="text-xs text-slate-400">Riwayat aktual sensor; belum ada pembacaan. Skala setiap seri ditampilkan secara mandiri.</p>
             </div>
-            <div class="flex items-center gap-4 text-xs">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
               <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-sky-500"></span> Suhu (°C)</span>
-              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-teal-500"></span> pH (x10)</span>
-              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-indigo-500"></span> Kekeruhan (NTU/10)</span>
+              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-emerald-500"></span> pH (belum tersedia)</span>
+              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-indigo-500"></span> KAL turbidity</span>
             </div>
           </div>
 
           <!-- Area Grafik SVG Representatif -->
           <div class="mt-6 h-48 w-full">
-            <svg class="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
+            <svg id="sensor-chart" class="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none" role="img" aria-label="Grafik riwayat aktual suhu, pH bila tersedia, dan KAL turbidity; skala seri mandiri">
               <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" stroke-width="1" />
               <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" stroke-width="1" />
               <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" stroke-width="1" />
-
-              <!-- Garis Kurva Suhu -->
-              <path d="M 0,105 Q 125,103 250,104 T 500,102" fill="none" stroke="#0284c7" stroke-width="2.5" />
-              <!-- Garis Kurva pH -->
-              <path d="M 0,65 Q 125,66 250,65 T 500,64" fill="none" stroke="#0d9488" stroke-width="2.5" />
-              <!-- Garis Kurva Kekeruhan -->
-              <path d="M 0,35 Q 125,38 250,42 T 500,45" fill="none" stroke="#6366f1" stroke-width="2.5" />
+              <path id="temperature-series" d="" fill="none" stroke="#0284c7" stroke-width="2.5" />
+              <circle id="temperature-point" cx="250" cy="75" r="3" fill="#0284c7" visibility="hidden" />
+              <path id="ph-series" d="" fill="none" stroke="#10b981" stroke-width="2.5" />
+              <circle id="ph-point" cx="250" cy="75" r="3" fill="#10b981" visibility="hidden" />
+              <path id="turbidity-series" d="" fill="none" stroke="#6366f1" stroke-width="2.5" />
+              <circle id="turbidity-point" cx="250" cy="75" r="3" fill="#6366f1" visibility="hidden" />
             </svg>
             <div class="flex justify-between text-[10px] text-slate-400 mt-2">
-              <span>07:45 WIB</span>
-              <span>08:30 WIB</span>
-              <span>09:15 WIB</span>
-              <span>10:00 WIB</span>
-              <span class="font-bold text-slate-700">10:42 WIB (Sekarang)</span>
+              <span id="chart-start-time">—</span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span id="chart-end-time" class="font-bold text-slate-700">—</span>
             </div>
           </div>
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
-          <span>Deviasi rata-rata data sensor berada di bawah ±1.4%, menunjukkan sirkulasi berjalan stabil.</span>
-          <span class="font-medium text-slate-600">360 Sampel Tercatat</span>
+          <span>Grafik memuat pembacaan sensor aktual dari riwayat backend.</span>
+          <span id="sample-count" class="font-medium text-slate-600">0 sampel</span>
         </div>
       </div>
 
@@ -425,57 +425,36 @@
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Catatan Sensor Terbaru</h3>
-              <p class="text-[11px] text-slate-400">Modul PH-4502C + Probe Elektrode BNC</p>
+              <p class="text-[11px] text-slate-400">Riwayat aktual dari backend</p>
             </div>
           </div>
 
-          <table class="w-full text-left text-xs">
+          <table class="table-fixed w-full text-left text-[10px] sm:text-xs">
+            <colgroup>
+              <col class="w-[20%]">
+              <col class="w-[15%]">
+              <col class="w-[10%]">
+              <col class="w-[24%]">
+              <col class="w-[31%]">
+            </colgroup>
             <thead>
               <tr class="border-b border-slate-100 text-slate-400 text-[11px]">
-                <th class="pb-2 font-medium">Waktu</th>
-                <th class="pb-2 font-medium">Suhu</th>
-                <th class="pb-2 font-medium">pH</th>
-                <th class="pb-2 font-medium">Turbiditas</th>
+                <th class="pb-2 pr-1 font-medium">Waktu</th>
+                <th class="pb-2 pr-1 font-medium">Suhu</th>
+                <th class="pb-2 pr-1 font-medium">pH</th>
+                <th class="pb-2 pr-1 font-medium">ADC/KAL</th>
+                <th class="pb-2 font-medium">Sensor</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-50 text-slate-700">
-              <tr>
-                <td class="py-2.5 font-medium">10:42:10</td>
-                <td class="py-2.5 text-sky-600">27.8°C</td>
-                <td class="py-2.5 text-teal-600">6.91</td>
-                <td class="py-2.5">92 NTU</td>
-              </tr>
-              <tr>
-                <td class="py-2.5 font-medium">10:35:00</td>
-                <td class="py-2.5 text-sky-600">27.8°C</td>
-                <td class="py-2.5 text-teal-600">6.90</td>
-                <td class="py-2.5">93 NTU</td>
-              </tr>
-              <tr>
-                <td class="py-2.5 font-medium">10:20:00</td>
-                <td class="py-2.5 text-sky-600">27.7°C</td>
-                <td class="py-2.5 text-teal-600">6.88</td>
-                <td class="py-2.5">95 NTU</td>
-              </tr>
-              <tr>
-                <td class="py-2.5 font-medium">10:05:00</td>
-                <td class="py-2.5 text-sky-600">27.6°C</td>
-                <td class="py-2.5 text-teal-600">6.87</td>
-                <td class="py-2.5">96 NTU</td>
-              </tr>
-              <tr>
-                <td class="py-2.5 font-medium">09:50:00</td>
-                <td class="py-2.5 text-sky-600">27.5°C</td>
-                <td class="py-2.5 text-teal-600">6.85</td>
-                <td class="py-2.5">98 NTU</td>
-              </tr>
+            <tbody id="sensor-log-body" class="divide-y divide-slate-50 text-slate-700">
+              <tr><td class="py-2.5 text-slate-400" colspan="5">Belum ada pembacaan sensor.</td></tr>
             </tbody>
           </table>
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-          <span>WiFi RSSI: -64 dBm</span>
-          <span class="text-emerald-600 font-semibold flex items-center gap-1">● Sinyal Kuat</span>
+          <span>Status koneksi backend ditentukan dari penerimaan data terakhir via USB serial.</span>
+          <span id="sensor-log-status" class="text-slate-500 font-semibold flex items-center gap-1">Belum terhubung</span>
         </div>
       </div>
     </div>
@@ -486,10 +465,11 @@
         <strong class="text-slate-600">SIMPONI</strong> • Sistem Monitoring Kualitas Air Pada Aquaponik Berbasis ESP32
       </div>
       <div>
-        Versi Firmware: v2.4.12 • Node MCU ESP32
+        ESP32 • USB Serial → Flask Backend /api/sensors
       </div>
     </footer>
   </div>
 
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>
