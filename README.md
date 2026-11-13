@@ -6,14 +6,15 @@ Sensor → ESP32 → USB Serial → Python Flask Backend → Firebase Realtime D
 
 ## 1. Persiapan ESP32 dan sensor
 
-1. Pastikan ESP32 sudah terhubung ke sensor DS18B20 dan turbidity sensor TS-300B.
+1. Pastikan ESP32 sudah terhubung ke sensor DS18B20, turbidity sensor TS-300B, dan probe pH 4502C.
 2. Gunakan pin yang dipertahankan:
-   - DS18B20: GPIO 14
+   - pH: GPIO 35
    - Turbidity: GPIO 34
+   - DS18B20: GPIO 14
    - Relay: GPIO 32
 3. Relay tetap diatur sebagai Active LOW dan perintah pompa Always ON.
-4. Sensor pH-4502C belum diintegrasikan. Struktur data telah disiapkan, tetapi nilai pH tidak dikirim sebelum integrasi aktual.
-5. Firmware ESP32 dibangun dengan Arduino IDE dan dikirim melalui kabel USB.
+4. Firmware final mengadopsi kalibrasi pH tiga titik dan batas turbidity yang sudah divalidasi; pengolahan data backend tetap menolak nilai yang tidak valid atau saturasi.
+5. Firmware ESP32 dapat dikompilasi melalui Arduino IDE atau PlatformIO, dengan source-of-truth utama tetap pada `firmware/SIMPONI_ESP32/SIMPONI_ESP32.ino`.
 
 ## 2. Mengunggah firmware melalui Arduino IDE
 
@@ -30,7 +31,9 @@ Interval pembacaan default ditetapkan pada `firmware/SIMPONI_ESP32/config.h` (`S
 Contoh debug dari firmware:
 
 ```text
-# SIMPONI siap; pembacaan dikirim setiap 180000 ms.
+MONITORING AQUAPONIK
+Mode: Monitoring dengan relay ON
+Relay: ON
 ```
 
 ## 3. Menghubungkan ESP32 ke laptop melalui USB

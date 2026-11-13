@@ -32,6 +32,10 @@ def validate_sensor_payload(payload):
     if payload["temperature_valid"]:
         if not _is_finite_number(temperature):
             raise ValueError("temperature_c tidak valid.")
+        if float(temperature) == -127.0:
+            payload["temperature_valid"] = False
+            payload["temperature_c"] = None
+            temperature = None
     elif temperature is not None:
         raise ValueError("temperature_c harus null saat sensor suhu tidak valid.")
 
@@ -40,11 +44,18 @@ def validate_sensor_payload(payload):
     if payload["turbidity_valid"]:
         if isinstance(adc, bool) or not isinstance(adc, int) or not 0 <= adc <= 4095:
             raise ValueError("turbidity_adc harus integer dalam rentang 0-4095.")
-        if not _is_finite_number(kal):
-            raise ValueError("turbidity_kal tidak valid.")
-        expected_kal = (adc - 2717.6) / -18.189
-        if not math.isclose(kal, expected_kal, abs_tol=0.011):
-            raise ValueError("turbidity_kal tidak sesuai rumus kalibrasi dari ADC.")
+        if adc >= 4090:
+            payload["turbidity_valid"] = False
+            payload["turbidity_adc"] = None
+            payload["turbidity_kal"] = None
+            adc = None
+            kal = None
+        else:
+            if not _is_finite_number(kal):
+                raise ValueError("turbidity_kal tidak valid.")
+            expected_kal = (adc - 2717.6) / -18.189
+            if not math.isclose(kal, expected_kal, abs_tol=0.011):
+                raise ValueError("turbidity_kal tidak sesuai rumus kalibrasi dari ADC.")
     elif adc is not None or kal is not None:
         raise ValueError("Nilai turbidity harus null saat sensor tidak valid.")
 

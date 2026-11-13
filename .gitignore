@@ -10,3 +10,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+backend/.env
+backend/credentials/
+.pio/

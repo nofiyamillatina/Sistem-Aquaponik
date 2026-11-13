@@ -151,7 +151,28 @@ def infer(inputs, config=None):
 
 def analyze(reading, config=None):
     """Return the stable API analysis shape, or incomplete when inputs/config are unavailable."""
-    if not isinstance(reading, dict) or not all(
+    if not isinstance(reading, dict):
+        return {
+            "status": "incomplete",
+            "diagnosis": None,
+            "message": "Diagnosis tiga parameter belum lengkap atau tidak valid; pastikan suhu, pH, dan turbidity valid.",
+        }
+
+    temperature = reading.get("temperature_c")
+    turbidity_adc = reading.get("turbidity_adc")
+    if temperature == -127 or (isinstance(temperature, (int, float)) and not isinstance(temperature, bool) and not math.isfinite(float(temperature))):
+        return {
+            "status": "incomplete",
+            "diagnosis": None,
+            "message": "Pembacaan suhu tidak valid (sensor terputus atau menghasilkan -127°C).",
+        }
+    if isinstance(turbidity_adc, (int, float)) and not isinstance(turbidity_adc, bool) and turbidity_adc >= 4090:
+        return {
+            "status": "incomplete",
+            "diagnosis": None,
+            "message": "ADC turbidity saturasi; data tidak valid untuk inferensi fuzzy.",
+        }
+    if not all(
         reading.get(f"{field.split('_')[0]}_valid") is True
         and _is_finite_number(reading.get(field))
         for field in INPUTS
