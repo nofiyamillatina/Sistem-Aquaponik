@@ -118,8 +118,10 @@ class FirebaseService:
                 if item is None:
                     break
                 reading, analysis = item
+                logger.info("Mencoba menyimpan data ke Firebase: %s", reading["record_id"])
                 try:
                     self.save_reading(reading, analysis)
+                    logger.info("Data berhasil disimpan ke Firebase.")
                 except Exception:
                     self._worker_stop.wait(self._retry_seconds)
                     break
@@ -175,7 +177,7 @@ class FirebaseService:
                 **analysis,
             }
         try:
-            self._reference().update(updates)
+            self._reference("/").update(updates)
         except Exception as error:
             self._record_operation("save_reading", False, error)
             logger.exception("Firebase gagal menyimpan pembacaan.")

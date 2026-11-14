@@ -1,3 +1,4 @@
+
 #include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
@@ -18,7 +19,7 @@ const float PH_NETRAL = 6.86;
 const float ADC_BASA = 1311.74;
 const float PH_BASA = 9.18;
 
-// Batas turbidity berdasarkan hasil pengukuran terbaru
+// Batas turbidity
 const float BATAS_JERNIH = 1155;
 const float BATAS_KERUH = 941;
 
@@ -71,9 +72,9 @@ String statusTurbidity(float adc) {
 void setup() {
   Serial.begin(115200);
 
-  // Relay aktif LOW
+  // Relay aktif LOW, pompa selalu ON
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, LOW); // ON
+  digitalWrite(RELAY_PIN, LOW);
 
   analogReadResolution(12);
 
@@ -84,10 +85,6 @@ void setup() {
   pinMode(TURBIDITY_PIN, INPUT);
 
   sensors.begin();
-
-  Serial.println("MONITORING AQUAPONIK");
-  Serial.println("Mode: Monitoring dengan relay ON");
-  Serial.println("Relay: ON");
 }
 
 void loop() {
@@ -99,38 +96,48 @@ void loop() {
   sensors.requestTemperatures();
   float suhu = sensors.getTempCByIndex(0);
 
-  Serial.println("\n====== MONITORING AQUAPONIK ======");
+  bool temperatureValid =
+    (suhu != DEVICE_DISCONNECTED_C && isfinite(suhu));
 
-  Serial.print("ADC pH       : ");
-  Serial.println(adcPH, 2);
+  bool turbidityValid =
+    (adcTurbidity < 4090 && isfinite(adcTurbidity));
 
-  Serial.print("Nilai pH     : ");
-  if (isnan(ph)) {
-    Serial.println("Di luar rentang kalibrasi");
-  } else {
-    Serial.println(ph, 2);
-  }
+  bool phValid = isfinite(ph);
 
-  Serial.print("Status pH    : ");
-  Serial.println(statusPH(ph));
+  String turbidityStatus = statusTurbidity(adcTurbidity);
 
-  Serial.print("ADC Turbidity: ");
-  Serial.println(adcTurbidity, 2);
+  // Kirim data hanya dalam format JSON
+  Serial.print("{");
 
-  Serial.print("Status Air   : ");
-  Serial.println(statusTurbidity(adcTurbidity));
+  Serial.print("\"temperature_valid\":");
+  Serial.print(temperatureValid ? "true" : "false");
 
-  Serial.print("Suhu Air     : ");
-  if (suhu == DEVICE_DISCONNECTED_C) {
-    Serial.println("Sensor tidak terdeteksi");
-  } else {
-    Serial.print(suhu, 2);
-    Serial.println(" C");
-  }
+  Serial.print(",\"temperature_c\":");
+  if (temperatureValid) Serial.print(suhu, 2);
+  else Serial.print("null");
 
-  Serial.println("Relay        : ON");
-  Serial.println("Pompa        : ON (jika rangkaian daya terpasang)");
-  Serial.println("==================================");
+  Serial.print(",\"turbidity_valid\":");
+  Serial.print(turbidityValid ? "true" : "false");
+
+  Serial.print(",\"turbidity_adc\":");
+  if (turbidityValid) Serial.print((int)round(adcTurbidity));
+  else Serial.print("null");
+
+  Serial.print(",\"turbidity_status\":\"");
+  if (turbidityValid) Serial.print(turbidityStatus);
+  else Serial.print("null");
+  Serial.print("\"");
+
+  Serial.print(",\"ph_valid\":");
+  Serial.print(phValid ? "true" : "false");
+
+  Serial.print(",\"ph\":");
+  if (phValid) Serial.print(ph, 2);
+  else Serial.print("null");
+
+  Serial.print(",\"pump_status\":\"ON\"");
+
+  Serial.println("}");
 
   delay(2000);
 }

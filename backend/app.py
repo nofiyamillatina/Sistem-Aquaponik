@@ -1,3 +1,4 @@
+
 import logging
 from datetime import datetime, timezone
 
@@ -9,7 +10,7 @@ if __package__:
     from .firebase_service import FirebaseService
     from .fuzzy_engine import analyze
     from .serial_reader import SerialReader
-else:  # pragma: no cover - script execution from the backend directory
+else:  # pragma: no cover
     from config import Config
     from firebase_service import FirebaseService
     from fuzzy_engine import analyze
@@ -46,6 +47,7 @@ def create_app(serial_reader=None, firebase_service=None):
         Config.SENSOR_STALE_SECONDS,
         on_reading=persist_reading,
     )
+
     app.extensions["serial_reader"] = reader
     app.extensions["firebase_service"] = firebase
 
@@ -54,6 +56,7 @@ def create_app(serial_reader=None, firebase_service=None):
         try:
             snapshot = reader.snapshot()
             reading = snapshot["reading"]
+
             if reading is None:
                 reading_data = {
                     "temperature_c": None,
@@ -68,15 +71,24 @@ def create_app(serial_reader=None, firebase_service=None):
                 }
             else:
                 reading_data = reading
-            analysis = analyze(reading) if snapshot["online"] else {
-                "status": "incomplete" if reading is None else "stale",
-                "diagnosis": None,
-                "message": (
-                    "Belum ada pembacaan sensor."
-                    if reading is None
-                    else "Data sensor sudah kedaluwarsa atau koneksi serial terputus."
-                ),
-            }
+
+            if snapshot["online"]:
+                analysis = analyze(reading)
+            else:
+                analysis = {
+                    "status": "incomplete" if reading is None else "stale",
+                    "diagnosis": None,
+                    "recommendation": None,
+                    "message": (
+                        "Belum ada pembacaan sensor."
+                        if reading is None
+                        else (
+                            "Data sensor sudah kedaluwarsa atau "
+                            "koneksi serial terputus."
+                        )
+                    ),
+                }
+
             response = {
                 **reading_data,
                 "received_at": snapshot["last_received_at"],
@@ -89,20 +101,35 @@ def create_app(serial_reader=None, firebase_service=None):
                 "analysis": analysis,
                 "firebase": firebase.status,
             }
+
             return jsonify(response)
+
         except Exception:
             logger.exception("Gagal membentuk respons sensor.")
-            return jsonify({"error": "Backend gagal membaca status sensor."}), 500
+            return jsonify({
+                "error": "Backend gagal membaca status sensor."
+            }), 500
 
     @app.get("/api/history")
     def history():
         try:
-            requested_limit = request.args.get("limit", default=100, type=int)
+            requested_limit = request.args.get(
+                "limit", default=100, type=int
+            )
+
             if requested_limit is None or requested_limit < 1:
-                return jsonify({"error": "Parameter limit harus berupa bilangan positif."}), 400
+                return jsonify({
+                    "error": "Parameter limit harus berupa bilangan positif."
+                }), 400
+
             limit = min(requested_limit, Config.HISTORY_MAX_ITEMS)
             readings = firebase.get_history(limit)
-            return jsonify({"readings": readings, "available": True})
+
+            return jsonify({
+                "readings": readings,
+                "available": True,
+            })
+
         except Exception:
             logger.exception("Gagal mengambil riwayat Firebase.")
             return jsonify({
@@ -115,6 +142,7 @@ def create_app(serial_reader=None, firebase_service=None):
     def status():
         try:
             snapshot = reader.snapshot()
+
             return jsonify({
                 "backend": "online",
                 "serial_port": Config.SERIAL_PORT,
@@ -127,9 +155,12 @@ def create_app(serial_reader=None, firebase_service=None):
                 "firebase": firebase.status,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             })
+
         except Exception:
             logger.exception("Gagal membentuk status backend.")
-            return jsonify({"error": "Backend gagal membaca status sistem."}), 500
+            return jsonify({
+                "error": "Backend gagal membaca status sistem."
+            }), 500
 
     return app
 
@@ -140,8 +171,10 @@ app = create_app()
 if __name__ == "__main__":
     serial_reader = app.extensions["serial_reader"]
     firebase_service = app.extensions["firebase_service"]
+
     firebase_service.start_writer()
     serial_reader.start()
+
     try:
         app.run(
             host=Config.FLASK_HOST,
