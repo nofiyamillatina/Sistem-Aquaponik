@@ -1,128 +1,211 @@
-import { BACKEND_BASE_URL, MAX_HISTORY_SAMPLES, REQUEST_TIMEOUT_MS } from './config.js';
 
-function isIntegerInRange(value, minimum, maximum) {
-  return Number.isInteger(value) && value >= minimum && value <= maximum;
+import {
+  child,
+  get,
+  limitToLast,
+  orderByChild,
+  query,
+  ref
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+import { database, firebaseReady } from "./firebase-client.js";
+import {
+  MAX_HISTORY_SAMPLES,
+  SENSOR_INTERVAL_SECONDS
+} from "./config.js";
+
+const STALE_AFTER_SECONDS = SENSOR_INTERVAL_SECONDS * 2;
+
+function toValidDate(value) {
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date : null;
 }
 
-export function validateSensorResponse(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new TypeError('Respons API bukan objek JSON.');
-  }
-  if (typeof payload.temperature_valid !== 'boolean') {
-    throw new TypeError('Field temperature_valid tidak valid.');
-  }
-  if (payload.temperature_valid && !Number.isFinite(payload.temperature_c)) {
-    throw new TypeError('temperature_c harus berupa angka valid saat sensor aktif.');
-  }
-  if (!payload.temperature_valid && payload.temperature_c !== null) {
-    throw new TypeError('temperature_c harus null saat sensor suhu tidak valid.');
-  }
-  if (typeof payload.turbidity_valid !== 'boolean') {
-    throw new TypeError('Field turbidity_valid tidak valid.');
-  }
-  if (payload.turbidity_valid) {
-    if (!isIntegerInRange(payload.turbidity_adc, 0, 4095)) {
-      throw new TypeError('turbidity_adc harus berupa integer antara 0 dan 4095.');
-    }
-    if (!Number.isFinite(payload.turbidity_kal)) {
-      throw new TypeError('turbidity_kal harus berupa angka valid.');
-    }
-  } else if (payload.turbidity_adc !== null || payload.turbidity_kal !== null) {
-    throw new TypeError('Nilai turbidity harus null saat sensor tidak valid.');
-  }
-  if (typeof payload.ph_valid !== 'boolean') {
-    throw new TypeError('Field ph_valid tidak valid.');
-  }
-  if (payload.ph_valid && !Number.isFinite(payload.ph)) {
-    throw new TypeError('ph harus berupa angka valid saat sensor pH aktif.');
-  }
-  if (!payload.ph_valid && payload.ph !== null) {
-    throw new TypeError('ph harus null saat sensor pH belum tersedia.');
-  }
-  if (typeof payload.esp32_online !== 'boolean') {
-    throw new TypeError('Field esp32_online tidak valid.');
-  }
-  if (typeof payload.serial_connected !== 'boolean' || typeof payload.data_fresh !== 'boolean') {
-    throw new TypeError('Status serial/data_fresh tidak valid.');
-  }
-  if (payload.data_fresh && !payload.received_at) {
-    throw new TypeError('received_at wajib tersedia untuk data sensor yang masih segar.');
-  }
-  if (payload.received_at && !Number.isFinite(new Date(payload.received_at).getTime())) {
-    throw new TypeError('received_at bukan timestamp yang valid.');
-  }
-  if (payload.pump_status !== 'ON' && payload.esp32_online) {
-    throw new TypeError('Status perintah pompa tidak sesuai konfigurasi Always ON.');
-  }
+function normalizeReading(reading) {
+  const receivedAt = toValidDate(
+    reading.received_at || reading.timestamp
+  );
+
+  const ageSeconds = receivedAt
+    ? Math.max(0, (Date.now() - receivedAt.getTime()) / 1000)
+    : null;
+
+  const dataFresh =
+    ageSeconds !== null &&
+    ageSeconds <= STALE_AFTER_SECONDS;
+
+  const temperatureValid =
+    reading.temperature_valid === true &&
+    Number.isFinite(reading.temperature_c);
+
+  const phValid =
+    reading.ph_valid === true &&
+    Number.isFinite(reading.ph);
+
+  const turbidityValid =
+    reading.turbidity_valid === true &&
+    Number.isInteger(reading.turbidity_adc) &&
+    reading.turbidity_adc >= 0 &&
+    reading.turbidity_adc <= 4095;
 
   return {
-    temperature_c: payload.temperature_valid ? payload.temperature_c : null,
-    temperature_valid: payload.temperature_valid,
-    turbidity_adc: payload.turbidity_valid ? payload.turbidity_adc : null,
-    turbidity_kal: payload.turbidity_valid ? payload.turbidity_kal : null,
-    turbidity_valid: payload.turbidity_valid,
-    ph: payload.ph_valid ? payload.ph : null,
-    ph_valid: payload.ph_valid,
-    pump_status: payload.pump_status,
-    esp32_online: payload.esp32_online,
-    serial_connected: payload.serial_connected,
-    data_fresh: payload.data_fresh,
-    age_seconds: payload.age_seconds,
-    record_id: payload.record_id,
-    received_at: payload.received_at,
-    analysis: payload.analysis,
-    firebase: payload.firebase,
+    temperature_c: temperatureValid
+      ? reading.temperature_c : null,
+    temperature_valid: temperatureValid,
+
+    ph: phValid ? reading.ph : null,
+    ph_valid: phValid,
+
+    turbidity_adc: turbidityValid
+      ? reading.turbidity_adc : null,
+    turbidity_valid: turbidityValid,
+
+    pump_status: reading.pump_status || null,
+
+    record_id: reading.record_id || null,
+    received_at: receivedAt?.toISOString() || null,
+
+    data_fresh: dataFresh,
+    age_seconds: ageSeconds,
+
+    serial_connected: dataFresh,
+    esp32_online: dataFresh,
+
+    analysis: {
+      status: dataFresh ? "incomplete" : "stale",
+      diagnosis: null,
+      recommendation: null,
+      message: dataFresh
+        ? "Hasil diagnosis belum tersedia."
+        : "Data sensor sudah kedaluwarsa."
+    },
+
+    firebase: {
+      initialized: true,
+      connected: true,
+      pending_writes: 0
+    }
   };
 }
 
-async function requestJson(path) {
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  const url = `${BACKEND_BASE_URL.replace(/\/+$/, '')}${path}`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-      cache: 'no-store',
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      throw new Error(`Flask Backend mengembalikan HTTP ${response.status}.`);
-    }
-    return await response.json();
-  } finally {
-    window.clearTimeout(timeoutId);
-  }
-}
-
 export async function fetchSensorReadings() {
-  return validateSensorResponse(await requestJson('/api/sensors'));
+  await firebaseReady;
+
+  const [readingSnapshot, statusSnapshot] = await Promise.all([
+    get(ref(database, "latest_readings")),
+    get(ref(database, "system_status"))
+  ]);
+
+  if (!readingSnapshot.exists()) {
+    throw new Error("Belum ada pembacaan sensor di Firebase.");
+  }
+
+  const reading = readingSnapshot.val();
+  const systemStatus = statusSnapshot.exists()
+    ? statusSnapshot.val()
+    : {};
+
+  const result = normalizeReading(reading);
+
+  // Ambil diagnosis yang sesuai dengan record sensor terbaru.
+  if (result.record_id) {
+    const analysisSnapshot = await get(
+      child(ref(database, "fuzzy_results"), result.record_id)
+    );
+
+    if (analysisSnapshot.exists()) {
+      const savedAnalysis = analysisSnapshot.val();
+
+      result.analysis = {
+        status: savedAnalysis.status,
+        diagnosis: savedAnalysis.diagnosis || null,
+        recommendation: savedAnalysis.recommendation || null,
+        message: savedAnalysis.message || ""
+      };
+    }
+  }
+
+  // Status sistem berdasarkan waktu pembacaan terakhir.
+  if (systemStatus.last_received_at && result.received_at) {
+    const statusTime = toValidDate(systemStatus.last_received_at);
+    const readingTime = toValidDate(result.received_at);
+
+    if (
+      statusTime &&
+      readingTime &&
+      Math.abs(statusTime.getTime() - readingTime.getTime()) > 5000
+    ) {
+      console.warn("Waktu status Firebase berbeda dari data sensor.");
+    }
+  }
+
+  if (!result.data_fresh) {
+    result.analysis.status = "stale";
+    result.analysis.diagnosis = null;
+    result.analysis.recommendation = null;
+  }
+
+  return result;
 }
 
 export async function fetchSensorHistory() {
-  const payload = await requestJson(`/api/history?limit=${MAX_HISTORY_SAMPLES}`);
-  if (!payload || typeof payload !== 'object' || !Array.isArray(payload.readings)) {
-    throw new TypeError('Riwayat sensor tidak valid.');
+  await firebaseReady;
+
+  const historyQuery = query(
+    ref(database, "sensor_readings"),
+    orderByChild("timestamp_epoch"),
+    limitToLast(MAX_HISTORY_SAMPLES)
+  );
+
+  const snapshot = await get(historyQuery);
+
+  if (!snapshot.exists()) {
+    return {
+      available: true,
+      readings: []
+    };
   }
 
-  const readings = payload.readings.map((reading) => {
-    const receivedAt = new Date(reading.received_at || reading.timestamp);
-    if (!Number.isFinite(receivedAt.getTime())) {
-      throw new TypeError('Timestamp pada riwayat sensor tidak valid.');
-    }
-    return {
-      record_id: reading.record_id,
-      temperature_c: reading.temperature_valid && Number.isFinite(reading.temperature_c) ? reading.temperature_c : null,
-      ph: reading.ph_valid && Number.isFinite(reading.ph) ? reading.ph : null,
-      turbidity_adc: reading.turbidity_valid && isIntegerInRange(reading.turbidity_adc, 0, 4095)
-        ? reading.turbidity_adc : null,
-      turbidity_kal: reading.turbidity_valid && Number.isFinite(reading.turbidity_kal) ? reading.turbidity_kal : null,
-      temperature_valid: reading.temperature_valid === true,
-      turbidity_valid: reading.turbidity_valid === true,
-      ph_valid: reading.ph_valid === true,
-      receivedAt,
-    };
-  });
-  return { available: payload.available === true, readings };
+  const values = snapshot.val();
+
+  const readings = Object.entries(values)
+    .map(([key, reading]) => {
+      const receivedAt = toValidDate(
+        reading.received_at || reading.timestamp
+      );
+
+      if (!receivedAt) return null;
+
+      return {
+        record_id: reading.record_id || key,
+
+        temperature_c:
+          reading.temperature_valid === true &&
+          Number.isFinite(reading.temperature_c)
+            ? reading.temperature_c : null,
+
+        ph:
+          reading.ph_valid === true &&
+          Number.isFinite(reading.ph)
+            ? reading.ph : null,
+
+        turbidity_adc:
+          reading.turbidity_valid === true &&
+          Number.isInteger(reading.turbidity_adc)
+            ? reading.turbidity_adc : null,
+
+        temperature_valid: reading.temperature_valid === true,
+        ph_valid: reading.ph_valid === true,
+        turbidity_valid: reading.turbidity_valid === true,
+
+        receivedAt
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.receivedAt - b.receivedAt);
+
+  return {
+    available: true,
+    readings
+  };
 }

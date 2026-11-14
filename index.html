@@ -38,15 +38,19 @@
 
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="min-h-screen flex flex-col justify-between p-4 md:p-8">
 
   <div class="max-w-7xl mx-auto w-full space-y-6">
-    <!-- Header Bar -->
+
+    <!-- HEADER -->
     <header class="bg-white rounded-2xl p-4 md:px-6 md:py-4 shadow-sm border border-slate-100 flex flex-wrap items-center justify-between gap-4">
+
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-inner">
           <span class="material-symbols-outlined text-2xl">water_drop</span>
         </div>
+
         <div>
           <div class="flex items-center gap-2">
             <h1 class="text-xl font-bold tracking-tight text-slate-800">SIMPONI</h1>
@@ -59,196 +63,306 @@
       </div>
 
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full md:w-auto">
-        <!-- Status koneksi ESP32 -->
+
         <div id="connection-indicator" class="connection-indicator connection-offline flex items-center gap-2 bg-rose-50 px-3 py-1.5 rounded-full border border-rose-200" aria-live="polite">
           <span class="connection-dot w-2.5 h-2.5 rounded-full bg-rose-500"></span>
           <span id="connection-status" class="text-xs font-semibold text-rose-800">ESP32 Offline</span>
         </div>
 
-        <!-- Interval Sensor dan Dashboard -->
         <div class="text-xs text-slate-500 border-l border-slate-200 pl-4 space-y-0.5 min-w-0" aria-label="Interval sistem">
           <div>Pembacaan sensor: <span id="sensor-interval" class="font-semibold text-slate-700">Setiap 3 menit</span></div>
           <div>Pembaruan dashboard: <span id="dashboard-interval" class="font-semibold text-slate-700">Setiap 30 detik</span></div>
         </div>
 
-        <!-- Tombol Sinkronkan -->
         <button id="refresh-sensors" type="button" class="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 active:scale-95 text-white px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all shadow-sm">
           <span class="material-symbols-outlined text-base">sync</span>
           Sinkronkan
         </button>
+
       </div>
     </header>
 
-    <!-- Sub-header & Title Section -->
+    <!-- JUDUL DASHBOARD -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+
       <div>
         <div class="text-xs text-slate-400 font-medium">
-          Sistem Aquaponik Cerdas &gt; <span class="text-sky-600">Pemantauan Data Kolam & Hidroponik</span>
+          Sistem Aquaponik Cerdas &gt;
+          <span class="text-sky-600">Pemantauan Data Kolam & Hidroponik</span>
         </div>
+
         <h2 class="text-2xl font-bold text-slate-900 mt-1">Dashboard SIMPONI</h2>
         <p class="text-xs text-slate-500">Sistem Monitoring Kualitas Air Pada Aquaponik Berbasis ESP32</p>
       </div>
+
       <div class="flex items-center gap-2 text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-xl self-start md:self-auto">
         <span class="material-symbols-outlined text-base text-slate-400">schedule</span>
         <span>Update terakhir: <strong id="last-updated" class="text-slate-700">Belum ada</strong></span>
+
         <button id="refresh-time" type="button" class="hover:text-sky-600 ml-1" aria-label="Minta data sensor terbaru">
           <span class="material-symbols-outlined text-base">refresh</span>
         </button>
       </div>
+
     </div>
 
-    <!-- Alert / Diagnosis Kualitas Air Realtime -->
+    <!-- DIAGNOSIS KUALITAS AIR -->
     <div id="water-condition-panel" class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+
       <div class="flex items-start md:items-center gap-3">
+
         <div class="p-2 bg-slate-50 rounded-xl text-slate-500">
           <span id="water-condition-symbol" class="material-symbols-outlined text-2xl">sensors</span>
         </div>
+
         <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Diagnosis Kualitas Air Realtime</span>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Diagnosis Kualitas Air Realtime
+            </span>
+
             <span id="water-condition-label" class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-700">
               Menunggu data sensor.
             </span>
           </div>
+
           <p class="text-xs text-slate-600 mt-1">
             <span id="water-condition-description">Menunggu data sensor.</span>
           </p>
         </div>
+
       </div>
 
+      <!-- KATEGORI -->
       <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 border-t md:border-t-0 md:border-l border-slate-100 pt-2 md:pt-0 md:pl-4" aria-label="Kategori kualitas air">
+
         <span class="font-medium">Kategori:</span>
-        <span class="inline-flex items-center gap-1 text-emerald-700 font-semibold" title="Parameter berada dalam rentang yang sesuai untuk mendukung ikan nila dan tanaman selada."><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Baik</span>
-        <span class="inline-flex items-center gap-1 text-amber-600 font-semibold" title="Satu atau beberapa parameter mulai menyimpang dari kondisi ideal dan perlu dipantau."><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Perlu Perhatian</span>
-        <span class="inline-flex items-center gap-1 text-rose-600 font-semibold" title="Parameter air berpotensi mengganggu ikan, tanaman, atau keseimbangan ekosistem."><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Buruk</span>
+
+        <span class="inline-flex items-center gap-1 text-emerald-700 font-semibold" title="Parameter berada dalam rentang yang sesuai untuk mendukung ikan nila dan tanaman selada.">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          Baik
+        </span>
+
+        <span class="inline-flex items-center gap-1 text-amber-600 font-semibold" title="Satu atau beberapa parameter mulai menyimpang dari kondisi ideal dan perlu dipantau.">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          Perlu Perhatian
+        </span>
+
+        <span class="inline-flex items-center gap-1 text-rose-600 font-semibold" title="Parameter air berpotensi mengganggu ikan, tanaman, atau keseimbangan ekosistem.">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          Buruk
+        </span>
+
       </div>
     </div>
 
-    <!-- 3 Parameter Utama Sensor -->
+    <!-- REKOMENDASI TINDAKAN -->
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+
+      <div class="flex items-center gap-2 mb-3">
+        <span class="material-symbols-outlined text-amber-500 text-2xl">lightbulb</span>
+        <h3 class="font-bold text-slate-800">Rekomendasi Tindakan</h3>
+      </div>
+
+      <p id="recommendation-summary" class="text-sm text-slate-600 mb-3">
+        Menunggu hasil diagnosis kualitas air.
+      </p>
+
+      <div id="recommendation-issues" class="space-y-3">
+      </div>
+
+      <div id="pump-recommendation" class="mt-4 border-t border-slate-200 pt-3 text-sm font-medium text-emerald-700">
+        Pompa tetap ON untuk menjaga sirkulasi air.
+      </div>
+
+    </div>
+
+    <!-- TIGA PARAMETER SENSOR -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-      <!-- Card Suhu Air -->
+
+      <!-- SUHU -->
       <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-2.5">
+
             <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <span class="material-symbols-outlined text-xl">thermostat</span>
             </div>
+
             <div>
               <h3 class="text-sm font-semibold text-slate-800">Suhu Air Kolam</h3>
               <p class="text-[11px] text-slate-400">Sensor DS18B20</p>
             </div>
           </div>
+
           <span id="temperature-status" class="sensor-status px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
             Menunggu data
           </span>
         </div>
+
         <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="temperature-value">—</span> <span class="text-lg font-normal text-slate-500">°C</span></div>
-          <div id="temperature-trend" class="text-xs text-slate-500 font-medium flex items-center">Menunggu pembacaan</div>
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <span id="temperature-value">—</span>
+            <span class="text-lg font-normal text-slate-500">°C</span>
+          </div>
+
+          <div id="temperature-trend" class="text-xs text-slate-500 font-medium">
+            Menunggu pembacaan
+          </div>
         </div>
+
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
           <span>Acuan nila:</span>
           <span class="font-semibold text-slate-700">25–32°C</span>
         </div>
+
       </div>
 
-      <!-- Card Derajat Keasaman (pH) -->
+      <!-- pH -->
       <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-2.5">
+
             <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <span class="material-symbols-outlined text-xl">science</span>
             </div>
+
             <div>
               <h3 class="text-sm font-semibold text-slate-800">Derajat Keasaman (pH)</h3>
-              <p class="text-[11px] text-slate-400">Sensor pH belum terintegrasi</p>
+              <p class="text-[11px] text-slate-400">Sensor pH</p>
             </div>
           </div>
-          <span id="ph-status" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
-            Menunggu Sensor pH
+
+          <span id="ph-status" class="sensor-status px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
+            Menunggu data
           </span>
         </div>
-        <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="ph-value">—</span> <span class="text-lg font-normal text-slate-500">pH</span></div>
-          <div class="text-xs text-slate-500 font-medium">Belum tersedia</div>
+
+        <div class="my-4 flex items-baseline justify-between gap-3">
+
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <span id="ph-value">—</span>
+            <span class="text-lg font-normal text-slate-500">pH</span>
+          </div>
+
+          <div id="ph-classification" class="text-xs font-semibold text-slate-500 text-right">
+            Belum tersedia
+          </div>
+
         </div>
+
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
-          <span>Kalibrasi sensor:</span>
-          <span class="font-semibold text-slate-700">Menunggu kalibrasi</span>
+          <span>Parameter:</span>
+          <span class="font-semibold text-slate-700">Derajat Keasaman</span>
         </div>
+
       </div>
 
-      <!-- Card Kekeruhan Air (Turbiditas) -->
+      <!-- TURBIDITY -->
       <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-2.5">
+
             <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
               <span class="material-symbols-outlined text-xl">waves</span>
             </div>
+
             <div>
               <h3 class="text-sm font-semibold text-slate-800">Kekeruhan Air (Turbiditas)</h3>
               <p class="text-[11px] text-slate-400">Sensor TS-300B</p>
             </div>
           </div>
+
           <span id="turbidity-status" class="sensor-status px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-50 text-slate-600 border border-slate-200">
             Menunggu data
           </span>
         </div>
+
         <div class="my-4 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-slate-900 tracking-tight"><span id="turbidity-adc">—</span> <span class="text-lg font-normal text-slate-500">ADC</span></div>
-          <div class="text-xs text-slate-500 font-medium">KAL: <span id="turbidity-kal">—</span></div>
+          <div class="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <span id="turbidity-adc">—</span>
+            <span class="text-lg font-normal text-slate-500">ADC</span>
+          </div>
+
+          <div class="text-xs text-slate-500 font-medium">
+            Status: <span id="turbidity-kal">—</span>
+          </div>
         </div>
+
         <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-500">
           <span>Status pembacaan:</span>
           <span id="turbidity-classification" class="font-semibold text-slate-700">Belum tersedia</span>
         </div>
+
       </div>
+
     </div>
 
-    <!-- Modul Pompa Sirkulasi -->
+    <!-- POMPA SIRKULASI -->
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+
         <div class="flex items-center gap-3">
+
           <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
             <span class="material-symbols-outlined text-2xl">cyclone</span>
           </div>
+
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <h3 class="font-bold text-slate-800">Pompa Sirkulasi Aquaponik</h3>
+
               <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-700 border border-sky-200">
                 ● ALWAYS ON • ACTIVE LOW
               </span>
             </div>
+
             <p class="text-xs text-slate-500 mt-0.5">
               Pompa diperintahkan menyala terus selama sistem berjalan; status fisik motor tidak diukur.
             </p>
           </div>
+
         </div>
 
         <div class="flex items-center gap-6 text-xs border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-6">
+
           <div>
             <div class="text-slate-400">Perintah pompa</div>
             <div id="pump-status" class="font-bold text-emerald-600 text-sm">Always ON</div>
           </div>
+
           <div>
             <div class="text-slate-400">Status Relai ESP32</div>
             <div class="font-bold text-slate-800 text-sm">Active LOW</div>
           </div>
+
         </div>
+
       </div>
+
       <div class="mt-3 pt-3 border-t border-slate-100 text-[11px] text-slate-400 flex items-center gap-1.5">
         <span class="material-symbols-outlined text-sm text-slate-400">info</span>
         Status Always ON menunjukkan perintah keluaran relay; gangguan motor tidak dapat dideteksi tanpa sensor tambahan.
       </div>
+
     </div>
 
-    <!-- Biologi Ekosistem Simbiosis (Ikan Nila & Selada) -->
+    <!-- BIOLOGI EKOSISTEM -->
     <div>
+
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <h3 class="font-bold text-slate-900">Biologi Ekosistem Simbiosis</h3>
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">ACUAN LINGKUNGAN IDEAL</span>
+
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+            ACUAN LINGKUNGAN IDEAL
+          </span>
         </div>
+
         <span class="text-xs text-emerald-600 flex items-center gap-1 font-medium cursor-pointer">
           <span class="material-symbols-outlined text-sm">menu_book</span>
           Pedoman Mutu Aquaponik
@@ -256,10 +370,13 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <!-- Kartu Ikan Nila -->
+
+        <!-- IKAN NILA -->
         <div class="bg-white rounded-2xl p-5 border border-sky-100 shadow-sm space-y-4">
+
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
+
               <div class="w-10 h-10 rounded-full bg-sky-50 flex items-center justify-center text-sky-600">
                 <svg class="w-6 h-6" viewBox="0 0 24 24" role="img" aria-label="Ikon ikan nila">
                   <path fill="currentColor" d="M7.5 12 2.5 8v8l5-4Z"/>
@@ -268,141 +385,196 @@
                   <circle cx="17.5" cy="11" r=".8" fill="#f0f9ff"/>
                 </svg>
               </div>
+
               <div>
                 <h4 class="font-bold text-slate-800">Ikan Nila</h4>
                 <p class="text-xs text-slate-400 italic">Oreochromis niloticus • Habitat Kolam Budidaya</p>
               </div>
             </div>
+
             <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
               Fauna Utama
             </span>
           </div>
 
-          <!-- Standar Parameter -->
           <div>
-            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)</div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+              INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)
+            </div>
+
             <div class="grid grid-cols-3 gap-2 text-xs">
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-slate-400 block text-[10px] break-words">Suhu Air</span>
                 <span class="font-bold text-slate-700 break-words">25–32°C</span>
                 <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Mendukung pertumbuhan ikan</span>
               </div>
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-slate-400 block text-[10px] break-words">Derajat pH</span>
                 <span class="font-bold text-slate-700 break-words">6,0–8,5</span>
                 <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Air tidak terlalu asam atau basa</span>
               </div>
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-slate-400 block text-[10px] break-words">Kekeruhan</span>
                 <span class="font-bold text-slate-700 break-words">Air relatif jernih</span>
                 <span class="text-[10px] text-slate-600 block mt-0.5 break-words">Padatan tersuspensi terkendali</span>
               </div>
+
             </div>
           </div>
 
-          <p class="text-[11px] text-slate-500">Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis (bukan hasil pengukuran sensor), bakteri mengubah limbah metabolisme ikan menjadi nutrisi bagi tanaman.</p>
+          <p class="text-[11px] text-slate-500">
+            Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis (bukan hasil pengukuran sensor), bakteri mengubah limbah metabolisme ikan menjadi nutrisi bagi tanaman.
+          </p>
 
-          <!-- Dampak Buruk Parameter Anomali -->
           <div class="bg-rose-50/60 rounded-xl p-3 border border-rose-100 text-xs space-y-1.5">
+
             <div class="font-bold text-rose-700 flex items-center gap-1 text-[11px]">
               <span class="material-symbols-outlined text-sm">warning</span>
               Dampak Jika Parameter Sensor Tidak Sesuai
             </div>
+
             <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
               <li><strong>Suhu:</strong> Dapat mengganggu metabolisme, nafsu makan, dan pertumbuhan ikan serta aktivitas bakteri pengurai limbah.</li>
               <li><strong>pH:</strong> Dapat mengganggu kesehatan ikan dan proses pengubahan limbah menjadi nutrisi bagi tanaman.</li>
               <li><strong>Kekeruhan:</strong> Partikel berlebih dapat mengganggu insang ikan dan meningkatkan penumpukan limbah dalam air.</li>
             </ul>
+
           </div>
+
         </div>
 
-        <!-- Kartu Tanaman Selada -->
+        <!-- TANAMAN SELADA -->
         <div class="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm space-y-4">
+
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
+
               <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                 <span class="material-symbols-outlined text-2xl">potted_plant</span>
               </div>
+
               <div>
                 <h4 class="font-bold text-slate-800">Tanaman Selada</h4>
                 <p class="text-xs text-slate-400 italic">Lactuca sativa • Grow Bed Hidroponik (NFT/DWC)</p>
               </div>
             </div>
+
             <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
               Flora Utama
             </span>
           </div>
 
-          <!-- Standar Parameter Selada -->
           <div>
-            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)</div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+              INFORMASI PARAMETER (ACUAN LINGKUNGAN IDEAL)
+            </div>
+
             <div class="grid grid-cols-3 gap-2 text-xs">
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-emerald-700 block text-[10px] break-words">Suhu Air</span>
                 <span class="font-bold text-slate-700 break-words">18–24°C</span>
                 <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Mendukung pertumbuhan akar</span>
               </div>
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-emerald-700 block text-[10px] break-words">pH Nutrisi</span>
                 <span class="font-bold text-slate-700 break-words">5,5–6,5</span>
                 <span class="text-[10px] text-emerald-600 block mt-0.5 break-words">Membantu penyerapan nutrisi</span>
               </div>
+
               <div class="min-w-0 p-1.5 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                 <span class="text-emerald-700 block text-[10px] break-words">Kekeruhan</span>
                 <span class="font-bold text-slate-700 break-words">Air relatif jernih</span>
                 <span class="text-[10px] text-slate-600 block mt-0.5 break-words">Padatan tersuspensi terkendali</span>
               </div>
+
             </div>
           </div>
 
-          <p class="text-[11px] text-slate-500">Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis, selada menyerap nutrisi dari air; air bersirkulasi kembali ke kolam ikan. Senyawa nutrisi tidak diukur oleh sensor saat ini.</p>
+          <p class="text-[11px] text-slate-500">
+            Toleransi lingkungan acuan ditunjukkan pada parameter di atas. Dalam siklus biologis, selada menyerap nutrisi dari air; air bersirkulasi kembali ke kolam ikan. Senyawa nutrisi tidak diukur oleh sensor saat ini.
+          </p>
 
-          <!-- Dampak Buruk Parameter Anomali -->
           <div class="bg-rose-50/60 rounded-xl p-3 border border-rose-100 text-xs space-y-1.5">
+
             <div class="font-bold text-rose-700 flex items-center gap-1 text-[11px]">
               <span class="material-symbols-outlined text-sm">warning</span>
               Dampak Jika Parameter Sensor Tidak Sesuai
             </div>
+
             <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
               <li><strong>Suhu:</strong> Dapat menghambat pertumbuhan akar, penyerapan nutrisi, dan aktivitas bakteri penyedia unsur hara.</li>
               <li><strong>pH:</strong> Dapat menghambat penyerapan nutrisi sehingga pertumbuhan tanaman terganggu dan daun menguning.</li>
               <li><strong>Kekeruhan:</strong> Endapan berlebih dapat mengganggu aliran air, menutupi akar, dan menghambat penyerapan nutrisi.</li>
             </ul>
+
           </div>
+
         </div>
+
       </div>
     </div>
 
-    <!-- Bagian Bawah: Grafik Tren dan Catatan Sensor Terbaru -->
+    <!-- GRAFIK DAN CATATAN SENSOR -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <!-- Grafik Tren (2 Kolom) -->
+
+      <!-- GRAFIK -->
       <div class="lg:col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+
         <div>
+
           <div class="flex items-center justify-between">
             <div>
               <h3 class="font-bold text-slate-800">Tren Data Sensor</h3>
-              <p id="chart-description" class="text-xs text-slate-400">Riwayat aktual sensor; belum ada pembacaan. Skala setiap seri ditampilkan secara mandiri.</p>
+
+              <p id="chart-description" class="text-xs text-slate-400">
+                Riwayat aktual sensor; belum ada pembacaan. Skala setiap seri ditampilkan secara mandiri.
+              </p>
             </div>
+
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
-              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-sky-500"></span> Suhu (°C)</span>
-              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-emerald-500"></span> pH (belum tersedia)</span>
-              <span class="flex items-center gap-1 text-slate-600"><span class="w-2.5 h-0.5 bg-indigo-500"></span> KAL turbidity</span>
+
+              <span class="flex items-center gap-1 text-slate-600">
+                <span class="w-2.5 h-0.5 bg-sky-500"></span>
+                Suhu (°C)
+              </span>
+
+              <span class="flex items-center gap-1 text-slate-600">
+                <span class="w-2.5 h-0.5 bg-emerald-500"></span>
+                pH (belum tersedia)
+              </span>
+
+              <span class="flex items-center gap-1 text-slate-600">
+                <span class="w-2.5 h-0.5 bg-indigo-500"></span>
+                KAL turbidity
+              </span>
+
             </div>
           </div>
 
-          <!-- Area Grafik SVG Representatif -->
           <div class="mt-6 h-48 w-full">
+
             <svg id="sensor-chart" class="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none" role="img" aria-label="Grafik riwayat aktual suhu, pH bila tersedia, dan KAL turbidity; skala seri mandiri">
+
               <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" stroke-width="1" />
               <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" stroke-width="1" />
               <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" stroke-width="1" />
+
               <path id="temperature-series" d="" fill="none" stroke="#0284c7" stroke-width="2.5" />
               <circle id="temperature-point" cx="250" cy="75" r="3" fill="#0284c7" visibility="hidden" />
+
               <path id="ph-series" d="" fill="none" stroke="#10b981" stroke-width="2.5" />
               <circle id="ph-point" cx="250" cy="75" r="3" fill="#10b981" visibility="hidden" />
+
               <path id="turbidity-series" d="" fill="none" stroke="#6366f1" stroke-width="2.5" />
               <circle id="turbidity-point" cx="250" cy="75" r="3" fill="#6366f1" visibility="hidden" />
+
             </svg>
+
             <div class="flex justify-between text-[10px] text-slate-400 mt-2">
               <span id="chart-start-time">—</span>
               <span></span>
@@ -410,18 +582,23 @@
               <span></span>
               <span id="chart-end-time" class="font-bold text-slate-700">—</span>
             </div>
+
           </div>
+
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
           <span>Grafik memuat pembacaan sensor aktual dari riwayat backend.</span>
           <span id="sample-count" class="font-medium text-slate-600">0 sampel</span>
         </div>
+
       </div>
 
-      <!-- Tabel Catatan Sensor Terbaru (1 Kolom) -->
+      <!-- CATATAN SENSOR -->
       <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+
         <div>
+
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="font-bold text-slate-800 text-sm">Catatan Sensor Terbaru</h3>
@@ -430,6 +607,7 @@
           </div>
 
           <table class="table-fixed w-full text-left text-[10px] sm:text-xs">
+
             <colgroup>
               <col class="w-[20%]">
               <col class="w-[15%]">
@@ -437,6 +615,7 @@
               <col class="w-[24%]">
               <col class="w-[31%]">
             </colgroup>
+
             <thead>
               <tr class="border-b border-slate-100 text-slate-400 text-[11px]">
                 <th class="pb-2 pr-1 font-medium">Waktu</th>
@@ -446,30 +625,46 @@
                 <th class="pb-2 font-medium">Sensor</th>
               </tr>
             </thead>
+
             <tbody id="sensor-log-body" class="divide-y divide-slate-50 text-slate-700">
-              <tr><td class="py-2.5 text-slate-400" colspan="5">Belum ada pembacaan sensor.</td></tr>
+              <tr>
+                <td class="py-2.5 text-slate-400" colspan="5">
+                  Belum ada pembacaan sensor.
+                </td>
+              </tr>
             </tbody>
+
           </table>
+
         </div>
 
         <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
           <span>Status koneksi backend ditentukan dari penerimaan data terakhir via USB serial.</span>
-          <span id="sensor-log-status" class="text-slate-500 font-semibold flex items-center gap-1">Belum terhubung</span>
+          <span id="sensor-log-status" class="text-slate-500 font-semibold flex items-center gap-1">
+            Belum terhubung
+          </span>
         </div>
+
       </div>
+
     </div>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="pt-4 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+
       <div>
         <strong class="text-slate-600">SIMPONI</strong> • Sistem Monitoring Kualitas Air Pada Aquaponik Berbasis ESP32
       </div>
+
       <div>
         ESP32 • USB Serial → Flask Backend /api/sensors
       </div>
+
     </footer>
+
   </div>
 
   <script type="module" src="js/dashboard.js"></script>
+
 </body>
 </html>
